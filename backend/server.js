@@ -18,7 +18,7 @@ const pool = new Pool({
   }
 });
 
-// Create table if not exists
+// Create table if it doesn't exist
 async function createTable() {
   try {
     await pool.query("SELECT NOW()");
@@ -49,23 +49,17 @@ app.get("/", (req, res) => {
 
 // Health check route
 app.get("/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "Backend is running successfully"
-  });
+  res.send("Backend is healthy ");
 });
 
-// Contact form submit route
+// Submit contact form
 app.post("/submit", async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
-    // Validation
+    // Basic validation
     if (!name || !email || !message) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required."
-      });
+      return res.status(400).send("All fields are required.");
     }
 
     await pool.query(
@@ -73,18 +67,11 @@ app.post("/submit", async (req, res) => {
       [name, email, message]
     );
 
-    res.status(200).json({
-      success: true,
-      message: "Thanks for reaching out! I’ll get back to you soon."
-    });
+    res.status(200).send("Thanks for reaching out! I’ll get back to you soon.");
 
   } catch (error) {
     console.error("Error saving message :", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Oops! Something went wrong. Please try again later."
-    });
+    res.status(500).send("Oops! Something went wrong. Please try again later.");
   }
 });
 

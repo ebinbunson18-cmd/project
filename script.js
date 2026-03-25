@@ -1,16 +1,25 @@
 const form = document.getElementById("contactForm");
+const status = document.getElementById("status");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const message = document.getElementById("message").value;
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
 
-  const status = document.getElementById("status");
+  // Validation
+  if (!name || !email || !message) {
+    status.innerText = "Please fill in all fields.";
+    status.style.color = "red";
+    return;
+  }
 
   try {
-    const res = await fetch("https://project-gqfn.onrender.com/submit", {
+    status.innerText = "Sending...";
+    status.style.color = "white";
+
+    const response = await fetch("https://project-gqfn.onrender.com/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -18,11 +27,18 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify({ name, email, message })
     });
 
-    const text = await res.text();
-    status.innerText = text;
-    form.reset();
+    const result = await response.text();
 
-  } catch (err) {
-    status.innerText = "Error sending message";
+    status.innerText = result;
+    status.style.color = response.ok ? "lightgreen" : "red";
+
+    if (response.ok) {
+      form.reset();
+    }
+
+  } catch (error) {
+    console.error("Frontend error :", error);
+    status.innerText = "Error sending message. Please try again.";
+    status.style.color = "red";
   }
 });
