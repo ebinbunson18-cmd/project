@@ -10,7 +10,7 @@ form.addEventListener("submit", async (e) => {
   const status = document.getElementById("status");
 
   try {
-    const res = await fetch("https://project-repo-ql0s.onrender.com/submit", {
+    const res = await fetch("https://project-gqfn.onrender.com/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
