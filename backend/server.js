@@ -67,7 +67,7 @@ app.post("/submit", async (req, res) => {
       [name, email, message]
     );
 
-    res.status(200).send("Thanks for reaching out! I’ll get back to you soon.");
+res.status(200).send("Message sent successfully.");
 
   } catch (error) {
     console.error("Error saving message :", error);
