@@ -22,7 +22,7 @@ const pool = new Pool({
 async function createTable() {
   try {
     await pool.query("SELECT NOW()");
-    console.log("Database connected successfully ");
+    console.log("Database connected successfully");
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS messages (
@@ -34,9 +34,9 @@ async function createTable() {
       )
     `);
 
-    console.log("Messages table is ready ");
+    console.log("Messages table is ready");
   } catch (error) {
-    console.error("Database setup error :", error);
+    console.error("Database setup error:", error);
   }
 }
 
@@ -44,33 +44,35 @@ createTable();
 
 // Home route
 app.get("/", (req, res) => {
-  res.send("Backend is running ");
+  res.send("Backend is running");
 });
 
 // Health check route
 app.get("/health", (req, res) => {
-  res.send("Backend is healthy ");
+  res.send("Backend is healthy");
 });
 
 // Submit contact form
 app.post("/submit", async (req, res) => {
   try {
+    console.log("Received data:", req.body);
+
     const { name, email, message } = req.body;
 
-    // Basic validation
     if (!name || !email || !message) {
       return res.status(400).send("All fields are required.");
     }
 
-    await pool.query(
-      "INSERT INTO messages (name, email, message) VALUES ($1, $2, $3)",
+    const result = await pool.query(
+      "INSERT INTO messages (name, email, message) VALUES ($1, $2, $3) RETURNING *",
       [name, email, message]
     );
 
-res.status(200).send("Message sent successfully.");
+    console.log("Inserted row:", result.rows[0]);
 
+    res.status(200).send("Message sent successfully.");
   } catch (error) {
-    console.error("Error saving message :", error);
+    console.error("Error saving message:", error);
     res.status(500).send("Oops! Something went wrong. Please try again later.");
   }
 });
@@ -78,5 +80,5 @@ res.status(200).send("Message sent successfully.");
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} `);
+  console.log(`Server running on port ${PORT}`);
 });

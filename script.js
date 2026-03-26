@@ -8,7 +8,6 @@ form.addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const message = document.getElementById("message").value.trim();
 
-  // Validation
   if (!name || !email || !message) {
     status.innerText = "Please fill in all fields.";
     status.style.color = "red";
@@ -35,9 +34,8 @@ form.addEventListener("submit", async (e) => {
     if (response.ok) {
       form.reset();
     }
-
   } catch (error) {
-    console.error("Frontend error :", error);
+    console.error("Frontend error:", error);
     status.innerText = "Error sending message. Please try again.";
     status.style.color = "red";
   }
